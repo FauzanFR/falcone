@@ -13,6 +13,7 @@ try:
 except Exception as e:
     _pipeline_error = str(e)
     PIPELINE_READY = False
+    print(_pipeline_error)
 
 st.set_page_config(
     page_title="Falcone AI",
@@ -20,7 +21,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-print(PIPELINE_READY, _pipeline_error)
 # ── CSS ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
