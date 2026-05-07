@@ -158,6 +158,28 @@ falcone-ai/
 
 ---
 
+## Technical Walkthrough
+
+### How It Works
+
+1. **Routing** — Il Capo analyzes the query and decides: full investigation or direct answer?
+2. **Fact Extraction** — Archivist reads uploaded documents (TXT, PDF, MD, JSON, CSV) and extracts structured facts via agentic tool-calling
+3. **Timeline Construction** — Chronologist builds an event timeline, flags temporal gaps and suspicious patterns
+4. **Legal Mapping** — Legalist performs RAG over 7 EU legal frameworks (BGE-M3 embeddings + Qdrant), maps facts to specific violations
+5. **Adversarial Review** — Advocatus Diaboli challenges every violation claim; Legalist rebuts with fresh retrieval (up to 2 rounds)
+6. **Final Report** — Il Capo compiles the investigation into a structured report with case summary, violations, contested points, and conclusion
+
+### Key Design Decisions
+
+- **Provider-agnostic LLM backend** — supports vLLM, Ollama, OpenAI, DeepSeek, Groq, GGUF, Transformers via a single factory pattern
+- **Agentic tool-calling** — custom XML-based tool parser with parallel execution and 3-tier rescue parsing
+- **Context window management** — automatic summarization + trimming prevents OOM on long investigations
+- **Investigation caching** — follow-up questions reuse previous findings without re-running the pipeline
+- **Temporal jurisdiction validation** — correctly identifies that laws enacted after a crime cannot apply (see Parmalat case)
+
+
+---
+
 ## Setup
 
 ### 1. Clone & Install
