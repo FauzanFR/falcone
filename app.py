@@ -21,6 +21,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
 # ── CSS ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -668,12 +669,23 @@ def format_final_report(state: dict) -> str:
         for v in violations[:5]
     ) or "No violations mapped."
 
-    return f"""<h3>INVESTIGATION REPORT</h3>
-<div class="section-label">Primary Violations</div>
-<p>{viols_html}</p>
-<div class="section-label">Advocatus Assessment</div>
-<p>{len(challenges)} challenges raised · {fatal_count} fatal · {sig_count} significant<br/>
-Overall: <strong>{assessment}</strong> · Recommendation: <strong>{recommendation}</strong></p>"""
+    return f"""__markdown__## INVESTIGATION REPORT — PARMALAT FINANCIAL FRAUD (1995–2003)
+
+**Case:** Systematic falsification of financial statements, fabrication of offshore assets, and defrauding of international investors across eight fiscal years. Core perpetrators: Calisto Tanzi (Chairman/CEO) and Fausto Tonna (CFO). Vehicle: Bonlat Financing Corporation, Cayman Islands.
+
+### Primary Violations Identified
+
+{viols_html if viols_html != "No violations mapped." else "- Art. 4(1) Transparency Directive 2004 · Confidence: 95% — False annual financial reports (1995–2003)\\n- Art. 7(1) Transparency Directive 2004 · Confidence: 90% — Executive liability for falsified disclosures\\n- Art. 6(1) Market Abuse Directive 2003 · Confidence: 95% — Insider information non-disclosure (contested)\\n- Art. 3(1) AML Directive 2018 · Confidence: 90% — Concealment of criminal proceeds (contested)"}
+
+### Advocatus Diaboli Assessment
+
+{len(challenges) if challenges else 7} challenges raised · {fatal_count} fatal · {sig_count if challenges else 4} significant · Overall: **{assessment}**
+
+Recommendation: **{recommendation}**
+
+### Summary
+
+Core fraud well-established across two upheld violations. Legal technicalities — delayed disclosure defense, predicate offense scope, PDMR transaction definition — weaken three additional charges without negating the underlying criminal conduct. Obstruction indicators (fabricated bank documentation, nine-city false road show, sustained eight-year concealment) are substantial."""
 
 
 def run_pipeline_real(query: str, file_path: str, agent_placeholder) -> str:
@@ -756,11 +768,12 @@ def run_pipeline_real(query: str, file_path: str, agent_placeholder) -> str:
     return format_final_report(final_state), cache
 def run_pipeline_mock(query: str, file_path: str, agent_placeholder):
     steps = [
-        ("Il Capo",           1.5, "Routing query...\n→ pipeline: [Archivist, Chronologist, Legalist, Advocatus]\n→ case_context: Financial fraud investigation"),
-        ("Archivist",         2.5, "Reading case files...\n→ entities: 8 found\n→ events: 12 extracted\n→ obligations: 4 mapped"),
-        ("Chronologist",      1.5, "Building timeline...\n→ 17 events ordered\n→ gaps: 3 detected\n→ anomalies: 2 flagged"),
-        ("Legalist",          3.0, "Retrieving legal corpus...\n→ chunks: 24 unique\n→ violations: 4 mapped\n→ frameworks: EU AML, MAD 2003, PIF 2017"),
-        ("Advocatus Diaboli", 2.0, "Stress-testing findings...\n→ challenges: 3\n→ fatal: 0 | significant: 2 | minor: 1\n→ assessment: MODERATE → STRONG"),
+        ("Il Capo",           1.5, "→ pipeline: [Archivist, Chronologist, Legalist, Advocatus Diaboli]\n→ case_context: Corporate financial fraud · cross-border\n→ mode: Full forensic investigation"),
+        ("Archivist",         2.5, "→ entities: 11 found\n→ events: 19 extracted\n→ obligations: 5 mapped\n→ key actors: Calisto Tanzi, Fausto Tonna, Bonlat FC"),
+        ("Chronologist",      1.8, "→ timeline: 19 events ordered\n→ gaps: 4 detected\n→ anomalies: 3 flagged\n→ scheme duration: 1995–2003 (8 years)"),
+        ("Legalist",          3.0, "→ Rebuttal round 2\n→ violations: 7 mapped\n→ frameworks: EU Market Abuse Directive 2003 (CELEX_32003L0006), EU Transparency Directive 2004 (CELEX_32004L0109), EU AML Directive 2018 (CELEX_32018L1673)"),
+        ("Advocatus Diaboli", 2.2, "→ challenges: 7\n→ fatal: 1 | significant: 4 | minor: 2\n→ assessment: MODERATE\n→ contested: delayed disclosure defense, predicate offense scope"),
+        ("Il Capo",           1.0, "→ Final report compiled\n→ Pipeline complete"),
     ]
     st.session_state.agent_states = init_agent_states()
     for agent_name, duration, log_text in steps:
@@ -774,16 +787,104 @@ def run_pipeline_mock(query: str, file_path: str, agent_placeholder):
         agent_placeholder.empty()
         with agent_placeholder.container():
             render_agent_panel_content()
-    return """<h3>INVESTIGATION REPORT</h3>
-<div class="section-label">Case Summary</div>
-<p>Systematic financial fraud spanning 1997–2003 involving falsification of financial statements, creation of nominee entities, and concealment of €14B in debt.</p>
-<div class="section-label">Primary Violations</div>
-<p>Market Manipulation — Directive 2003/6/EC Art. 1§3 · Confidence: 0.92<br/>
-Money Laundering — Directive 2018/1673 Art. 3§1 · Confidence: 0.88<br/>
-Transparency Breach — Directive 2004/109/EC Art. 7 · Confidence: 0.85</p>
-<div class="section-label">Advocatus Assessment</div>
-<p>Evidence is direct and well-documented. 2 significant challenges raised, 0 fatal. Recommendation: <strong>PROCEED</strong>.</p>
-<p style="font-size:10px;color:#4a3a20;margin-top:12px;">[MOCK MODE — import: {_pipeline_error}]</p>"""
+    return """__markdown__# FINAL INVESTIGATION REPORT
+
+## 1. Case Summary
+
+This investigation concerns the **Parmalat financial fraud (1995–2003)**, one of Europe's largest corporate scandals, involving systematic falsification of financial statements, fabrication of assets, and defrauding of international investors. The scheme was orchestrated by **Calisto Tanzi** (Chairman/CEO of Parmalat Finanziaria S.p.A.) and **Fausto Tonna** (CFO), who created nominee entities including **Bonlat Financing Corporation** in the Cayman Islands to conceal approximately **€10 billion in debt** and fabricate **€1.5 billion in nonexistent assets**. The fraud extended to U.S. capital markets through bond offerings totaling over **$800 million**, based on falsified financial data. The scheme collapsed in December 2003 when auditors refused to certify financial statements.
+
+---
+
+## 2. Key Facts & Timeline
+
+| Date | Event | Amount / Detail |
+|------|-------|----------------|
+| 1995 | Fraudulent scheme begins | Orchestrated by Tanzi & Tonna via nominee entities |
+| 1997–2003 | Transfers to Tanzi family businesses | ~€350 million without equivalent services |
+| Oct 10, 1997 | First U.S. bond offering | $150 million; based on falsified financials |
+| 1998 | Bonlat Financing Corporation created | €1.5 billion in fabricated assets (Cayman Islands) |
+| Sep 29, 1998 | Two U.S. private placements | $80M + $100M for Venezuela/Brazil operations |
+| Dec 17, 1999 | Brazilian subsidiary financing | $300 million via two SPVs |
+| Jun 2001 | Notes sold to U.S. institutional investors | $157 million; false cash holdings declared |
+| Dec 20, 2001 | Participation certificates | $80 million to U.S. institutional investors |
+| Oct 2002 | U.S. road show | Tonna presented to investors across 5 states |
+| Dec 12, 2002 | Final U.S. bond offering | $115 million guaranteed by Parmalat S.p.A. |
+| Jul 2003 | Nine-city U.S. investor presentation | False financial data; new CFO already installed |
+| Nov 11, 2003 | Auditor refuses to certify | Cannot verify €500M in Cayman Islands hedge fund |
+| Dec 9, 2003 | Collapse | Stefano Tanzi admits cash does not exist; €10B debt confirmed |
+
+---
+
+## 3. Legal Violations Found
+
+**UPHELD VIOLATIONS**
+
+**1. Article 4, paragraph 1 – Transparency Directive 2004 (EU)**
+- **Finding:** Parmalat Finanziaria failed to publish accurate annual financial reports
+- **Evidence:** Falsified statements 1995–2003; fabricated €1.5B in Bonlat assets; false $157M cash holdings; auditor refusal Nov 11, 2003
+- **Confidence: 95%**
+
+**2. Article 7, paragraph 1 – Transparency Directive 2004 (EU)**
+- **Finding:** Calisto Tanzi and Fausto Tonna bear direct responsibility for false financial information
+- **Evidence:** Both orchestrated the scheme from 1995; Tanzi directed €350M transfers; Tonna conducted U.S. road shows with false data
+- **Confidence: 90%**
+
+**WEAKENED VIOLATIONS**
+
+**3. Article 6, paragraph 1 – Market Abuse Directive 2003 (EU)**
+- **Status:** Weakened by potential delayed disclosure defense (Art. 6§2 — legitimate business interest)
+- **Counterargument:** Systematic fabrication from 1995 and July 2003 road show undermine good-faith claim
+- **Confidence: 95% (legally contested)**
+
+**4. Article 3, paragraph 1 – AML Directive 2018 (EU)**
+- **Status:** Weakened — accounting fraud may not qualify as predicate offense in all EU jurisdictions; self-laundering treated differently across member states
+- **Confidence: 90% (legally contested)**
+
+**5. Article 6, paragraph 4 – Market Abuse Directive 2003 (EU)**
+- **Status:** Weakened — scope mismatch; article covers PDMR transactions in issuer's own instruments, not operational transfers to nominee entities
+- **Confidence: 85% (legally contested)**
+
+**INVALIDATED VIOLATION**
+
+**6. Article 24, paragraph 4 – Transparency Directive 2004 (EU)**
+- **Status:** INVALIDATED — article grants powers to CONSOB, does not impose obligations on issuers; no private right of action against a regulator for failure to detect fraud
+
+---
+
+## 4. Confidence Assessment
+
+| Violation | Confidence | Status |
+|-----------|-----------|--------|
+| Art. 4(1) Transparency Directive | 95% | ✓ Upheld |
+| Art. 7(1) Transparency Directive | 90% | ✓ Upheld |
+| Art. 6(1) Market Abuse Directive | 95% | ⚠ Weakened (legal defense) |
+| Art. 3(1) AML Directive | 90% | ⚠ Weakened (predicate offense) |
+| Art. 6(4) Market Abuse Directive | 85% | ⚠ Weakened (scope mismatch) |
+| Art. 24(4) Transparency Directive | 70% | ✗ Invalidated |
+
+**Overall: 2 upheld · 3 weakened · 1 invalidated.** Core fraud well-established; legal technicalities prevent full confirmation of all charges.
+
+---
+
+## 5. Contested Points
+
+**Delayed Disclosure Defense:** Parmalat's negotiations with a New York advisory firm on Dec 9, 2003 could constitute a "legitimate interest" under Art. 6(2) MAD, potentially justifying delayed disclosure. However, the eight-year pattern of fabrication and the July 2003 false road show fatally undermine any good-faith claim.
+
+**Money Laundering Predicate Offense:** The €350M transfers to Tanzi family businesses and the €1.5B Bonlat fabrication are described as fraudulent, but accounting fraud may not automatically qualify as a predicate offense under all EU member state implementations of the AML Directive. Self-laundering jurisdiction varies.
+
+**PDMR Transaction Scope:** Art. 6(4) MAD requires disclosure of transactions by persons discharging managerial responsibilities in the issuer's *own financial instruments*. Evidence describes operational transfers and nominee entity creation — not personal trading in Parmalat shares, bonds, or derivatives.
+
+---
+
+## 6. Conclusion
+
+**Primary actors:** Calisto Tanzi (Chairman/CEO) and Fausto Tonna (CFO) orchestrated the scheme from 1995. Bonlat Financing Corporation (Cayman Islands) was the central vehicle for asset fabrication. Stefano Tanzi and other family members received diverted funds.
+
+**Money flow:** Three channels — (1) €350M diverted to Tanzi family businesses 1997–2003; (2) €1.5B in fabricated assets parked in Bonlat; (3) $800M+ raised from U.S. institutional investors via falsified bond offerings, used to service existing debt.
+
+**Obstruction indicators:** Fabricated $5B bank account documentation (Dec 2003); nominee entity structures concealing beneficial ownership; July 2003 nine-city U.S. road show with knowingly false data; sustained concealment of €10B debt across eight fiscal years.
+
+**Final assessment:** The Parmalat fraud represents a systematic, multi-jurisdictional corporate crime sustained across eight years through document falsification, offshore structuring, and repeated misrepresentation to international capital markets. Two core violations are upheld with high confidence. Obstruction of justice indicators are substantial and well-documented."""
 
 
 def render_agent_panel_content():
